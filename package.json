@@ -1,0 +1,22 @@
+{
+  "name": "demo-reagent-jest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "tkjone",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --verbose target/public/cljs-out/test/demo/core_test.js"
+  },
+  "devDependencies": {
+    "google-closure-library": "^20180805.0.0",
+    "jest": "^23.5.0"
+  },
+  "jest": {
+    "setupFiles": ["./dev/jest/setup.js"],
+    "testMatch": [
+      "**/__tests__/**/*.js?(x)",
+      "**/?(*.)+(spec|test).js?(x)",
+      "**/*+(_test).js"
+    ]
+  }
+}
