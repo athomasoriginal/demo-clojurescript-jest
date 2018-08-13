@@ -2,5 +2,8 @@
 .DS_STORE
 
 # javascript stuffs
+node_modules
 
 # clojure stuffs
+.cpcache
+target
