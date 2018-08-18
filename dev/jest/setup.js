@@ -4,8 +4,6 @@ var path = require('path');
 
 global.CLOSURE_BASE_PATH = '../../target/public/cljs-out/test/goog/';
 
-global.CLOSURE_NO_DEPS = true;
-
 global.CLOSURE_IMPORT_SCRIPT = function(src) {
   require(src);
   return true;
@@ -17,16 +15,10 @@ const content = fs.readFileSync(
   path.resolve(__dirname, '../../target/public/cljs-out/test/goog/base.js')
 );
 
-const contentThree = fs.readFileSync(
-  path.resolve(__dirname, '../../target/public/cljs-out/test/goog/deps.js')
-);
-
 const contentTwo = fs.readFileSync(
   path.resolve(__dirname, '../../target/public/cljs-out/test/cljs_deps.js')
 );
 
 vm.runInContext(content, globalContext, { filename: 'base.js' });
-
-vm.runInContext(contentThree, globalContext, { filename: 'deps.js' });
 
 vm.runInContext(contentTwo, globalContext, { filename: 'cljs_deps.js' });
