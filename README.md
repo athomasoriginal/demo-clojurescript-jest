@@ -26,11 +26,11 @@ Jest and CLJS
 
 - Jest globals are not available automatically
 
-  When writing test in Jest, you are provided many [global](https://jestjs.io/docs/en/api) functions like `test`, `expect` etc. To write this in ClojureScript, we have to use some JS interop. This means that in order to access any of the jest globals, we have to prefix with `js`. For example, if we want to use `expect` we would write, in our ClojureScript, `js/expect`.
+  When writing tests in Jest, you are provided many [global](https://jestjs.io/docs/en/api) functions like `test`, `expect` etc. To write this in ClojureScript, we have to use some JS interop. This means that in order to access any of the jest globals, we have to prefix them with `js`. For example, if we want to use `expect` we would write, in our ClojureScript, `js/expect`.
 
 - Jest is going to replace CLJ test library
 
-  We could split our tests into the ones that use components and the ones that do not and in this way, keep both frameworks
+  This is not so much an issue, as a point of clarification. Clojure provides an awesome test library. Its simple, small and works. With this in mind, by going with CLJS, at least to my knowledge at this point, we would move over whole sale, for the front end related code, to Jest.
 
 - Jest won't recognize compilers filename output
 
