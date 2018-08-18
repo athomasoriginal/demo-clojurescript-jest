@@ -1,5 +1,4 @@
-(ns demo.core
-  (:require [reagent.core :as reagent]))
+(ns demo.core)
 
 ;; simple cljs test
 
