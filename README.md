@@ -3,6 +3,7 @@
 Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As ClojureScript developers we lean heavily on React and the React ecosystem. Why not Jest?
 
 - [Quickstart](#quickstart)
+- [TODO](#todo)
 - [Issues](#issues)
 - [Breakdown](#breakdown)
   - [Basic Jest Setup](#basic-jest-setup)
@@ -27,6 +28,13 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
   ```bash
   yarn test
   ```
+
+## TODO
+
+- [ ] reagent example
+- [ ] snapshot example
+- [ ] async example
+- [ ] run tests as extra mains - [figwheel.main](https://figwheel.org/docs/extra_mains.html)
 
 ## Issues
 
