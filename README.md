@@ -50,6 +50,8 @@ Jest and CLJS
 
   **Solution 2:** Actually overwrite and import in a Node friendly way
 
+  > Note that you do not have to set the `CLOSURE_BASE_PATH` var. You could just prefix a relative path in front of `src` in the require. However, this is cleaner as `CLOSURE_BASE_PATH` is used in `base.js` to build the `src` we use in `CLOSURE_IMPORT_SCRIPT`. With this said, keep in mind that `CLOSURE_BASE_PATH` has to eventually lead to where `base.js` lives.
+
 ## Guide
 
 The following are setup steps that I included in the event someone wants to see how I came to the current implementation. You don't need to run through these yourself, its mostly as a reminder for myself.
