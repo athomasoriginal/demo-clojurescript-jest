@@ -11,14 +11,14 @@ global.CLOSURE_IMPORT_SCRIPT = function(src) {
 
 var globalContext = vm.createContext(global);
 
-const content = fs.readFileSync(
+const base = fs.readFileSync(
   path.resolve(__dirname, '../../target/public/cljs-out/test/goog/base.js')
 );
 
-const contentTwo = fs.readFileSync(
+const cljs_deps = fs.readFileSync(
   path.resolve(__dirname, '../../target/public/cljs-out/test/cljs_deps.js')
 );
 
-vm.runInContext(content, globalContext, { filename: 'base.js' });
+vm.runInContext(base, globalContext, { filename: 'base.js' });
 
-vm.runInContext(contentTwo, globalContext, { filename: 'cljs_deps.js' });
+vm.runInContext(cljs_deps, globalContext, { filename: 'cljs_deps.js' });
