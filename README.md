@@ -26,9 +26,7 @@ Jest and CLJS
 
 - Jest globals are not available automatically
 
-  You will notice that in jest tests you do not have to import `test`, `expect` etc. These are available [globally](https://jestjs.io/docs/en/api). However, we have to compile our code we need to import these. Three ways to handle this:
-
-  In order to overcome this, we say `js/expect`. This is not bad because it indicates that these things are globals.
+  You will notice that in jest tests you do not have to import `test`, `expect` etc. These are available [globally](https://jestjs.io/docs/en/api). Thus, this is a classic example of js interop. Thus, in order to access any of the jest globals, we have to prefix with `js`. For example, if we want to use `expect` we would write, in our ClojureScript, `js/expect`.
 
 - Jest is going to replace CLJ test library
 
