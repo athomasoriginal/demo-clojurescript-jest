@@ -134,7 +134,7 @@ Before we can run jest against our tests, we have to compile our clojurescript. 
 - Run jest
 
   ```bash
-
+  yarn test
   ```
 
 ## Resources
