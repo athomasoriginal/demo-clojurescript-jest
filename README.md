@@ -30,11 +30,11 @@ Jest and CLJS
 
 - Jest is going to replace CLJ test library
 
-  This is not so much an issue, as a point of clarification. Clojure provides an awesome test library. Its simple, small and works. With this in mind, by going with CLJS, at least to my knowledge at this point, we would move over whole sale, for the front end related code, to Jest.
+  This is not so much an issue, as a point of clarification. Clojure provides an awesome test library. Its simple, small and works. With this in mind, by going with Jest, at least to my knowledge at this point, we would move over whole sale, for the front end related code, to Jest.
 
-- Jest won't recognize compilers filename output
+- Jest won't recognize how the compiler names files
 
-  Jest expects `module.test.js` but CLJS will output as `module_test.js`. The solution is to modify the test name search path in jest configs. To resolve this, we add Jest configs in the `package.json` - `"**/*+(_test).js"` for `testMatch`.
+  Out of the box, Jest expects that the files it receives be formatted as `module.test.js`. However, base on how we write CLJ/S files in closure, we will see out files outputted as `core_test.js`. In order to get Jest to recognize our files, we have to update the jest config. We do this in the `package.json`. Note the property called `testMatch`.
 
 - Teaching jest how to load google closure libraries
 
