@@ -1,4 +1,4 @@
-# DEMO REAGENT + JEST
+# DEMO ClojureScript + Jest
 
 Jest and CLJS
 
@@ -14,6 +14,12 @@ Jest and CLJS
 
   ```bash
   clj -A:cljs-tests
+  ```
+
+- Run tests
+
+  ```bash
+  yarn test
   ```
 
 ## Issues
@@ -34,9 +40,15 @@ Jest and CLJS
 
 - Teaching jest how to load google closure libraries
 
-  This is because when we run this in the browser, `goog` is a global and available to us because its imported ahead of our main code. To do this, we use `setupFiles` which allows us to specify things like global functions before running tests.
+  The first thing is we have to make `goog` available everywhere. The second thing is that `google closure`'s module system, (`goog.provide`, `goog.require` etc) has an initial assumption which should be considered when trying to get this part to work: that its running in a HTML. What this means, and I am skirting around some other stuff to keep this brief, is that when a file has a `goog.require` closure is going to try to write a script to the HTML. This script will then import the contents of the required file.
 
-  However, google closure library thinks by default that its running in the DOM. So we have to find some nice way of requiring it so Jest tests can understand what is going on.
+  For the first one, we can do this by loading, and evaluating, the contents of `base.js` into the current runtime. Now that we have `goog` available, we still run into a problem with the module system. Yet, its not where you initially think it would be. `goog.require` and `goog.provide` work. However, if you try to access something you required, it won't be available. This is because, as noted above, the native behaviour of the require is to write a script. At this point in time, in the setupFile, it won't work.
+
+  In order to make it work, we have to overwrite some of the variables in google closure. Specifically, we are going to overwrite `CLOSURE_IMPORT_SCRIPT` and `CLOSURE_BASE_PATH`. What this does is now when we `require` something, its not going to try to write a script to the DOM, its going to use nodes require and put all the JS we need into our context.
+
+  **Solution 1:** Run `:simple` optimizations which puts everything into one test and now we don't have to worry about anything. The downside is I am wondering if there are performance implications. We would have to test this 1:1 with the JS version and see what happens.
+
+  **Solution 2:** Actually overwrite and import in a Node friendly way
 
 ## Guide
 
@@ -120,3 +132,8 @@ Before we can run jest against our tests, we have to compile our clojurescript. 
 ## Resources
 
 [Node JS Modules From CLJS](https://anmonteiro.com/2017/03/requiring-node-js-modules-from-clojurescript-namespaces/)
+[Webpack Example Config](https://github.com/koba04/closure-webpack-example/blob/master/webpack.config.js)
+
+http://blog.codekills.net/2012/01/10/loading-google-closure-libraries-from-node.js/
+https://github.com/facebook/jest/issues/2417
+https://60devs.com/executing-js-code-with-nodes-vm-module.html - learning vms
