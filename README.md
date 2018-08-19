@@ -35,6 +35,7 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
 - [ ] snapshot example
 - [ ] async example
 - [ ] run tests as extra mains - [figwheel.main](https://figwheel.org/docs/extra_mains.html)
+- [ ] Clojure assertions
 
 ## Issues
 
