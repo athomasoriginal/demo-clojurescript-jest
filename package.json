@@ -12,11 +12,14 @@
     "jest": "^23.5.0"
   },
   "jest": {
-    "setupFiles": ["./dev/jest/setup.js"],
+    "setupFiles": [
+      "./dev/jest/setup.js"
+    ],
     "testMatch": [
       "**/__tests__/**/*.js?(x)",
       "**/?(*.)+(spec|test).js?(x)",
-      "**/*+(_test).js"
+      "**/*+(_test).js",
+      "**/*+(-main).js"
     ]
   }
 }
