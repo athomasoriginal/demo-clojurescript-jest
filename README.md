@@ -31,10 +31,14 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
 
 ## TODO
 
+- [ ] runtime speed with more advanced compiler settings
 - [ ] reagent example
 - [ ] snapshot example
 - [ ] async example
-- [ ] run tests as extra mains - [figwheel.main](https://figwheel.org/docs/extra_mains.html)
+- [ ] run tests as extra mains (watch) - [figwheel.main](https://figwheel.org/docs/extra_mains.html)
+- [ ] running through multiple tests
+- [ ] running specific tests
+- [ ] when compiled can we run specific test files or files by name?
 - [ ] Clojure assertions
 
 ## Issues
@@ -66,6 +70,18 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
   In order to make it work, we have to overwrite some of the variables in google closure. Specifically, we are going to overwrite `CLOSURE_IMPORT_SCRIPT` and `CLOSURE_BASE_PATH`. This will make it so when we `require` something, its not going to try to write a script to the DOM, its going to use Nodes require and put all the JS we need into our context.
 
   > Note that you do not have to set the `CLOSURE_BASE_PATH` var. You could just prefix a relative path in front of `src` in the require. However, this is cleaner as `CLOSURE_BASE_PATH` is used in `base.js` to build the `src` we use in `CLOSURE_IMPORT_SCRIPT`. With this said, keep in mind that if you are setting this on a different project and your paths are not the same as mine, the rule of thumb is that `CLOSURE_BASE_PATH` has to eventually lead to where `base.js` lives.
+
+- Runtime speed
+
+  The first time I ran jest + cljs, I noticed that the time to run was much longer than I remembered when just using Jest and vanilla JS. So I put together another demo to just see vanilla jest run speed. The difference in first run speeds: `1.69s.` (vanilla) v. `13.25s` (cljs jest). The second run speeds however are dramatically improved at `1.50s` (vanilla) v.`2.09s` (cljs jest).
+
+  My theory is that the reason for this happening is because of the fact that we are loading `cljs.core` and `google.closure.library`. To test this, I increase the compiler level to `:simple` in the `test.cljs.edn` file. This will create a file in `target/public/cljs-out` called `test-main.js` and `removes whitespace and shortens local variable names` (2100 line file). The result will be all of your JS in one file vs. spread across multiple files. We also have to update the `yarn test` script to execute the `test-main.js` file instead of our other file and also add in `"**/*+(-main).js"` so Jest knows how to find the `test-main.js` file.
+
+  Once the above is done, we can run `yarn test` and we find that our tests run at `6.50s` (cljs jest + `:simple`) v. `13.25s` (cljs jest + `:none`) for cold start and the second start is now down to `1.75s`. Right on. Could we save more time?
+
+  The answer is yes. We can run the compiler with `:advanced` (21 loc) and we can get jest to run initially at `1.75s` and then each subsequent run will be around `1.50s`. The issue with this one is that it seems that the google closure compiler is renaming `.toBe` to `h`, so I had to manually change this, but in truth, I doubt anyone is going to need to run this in advanced mode and just knowing this can work and the time savings are available to us is fine for now.
+
+  I am not saying that CLJS compiled JS is faster here, I am just noting that there are a lot of libraries and extra code that come with it, but there are ways to improve the performance. For local development, running things with `:none` is fine. However, if you are running for a CI/CD flow, we might run with `:simple` to get some speed improvements? No idea. Just food for thought.
 
 ## Breakdown
 
