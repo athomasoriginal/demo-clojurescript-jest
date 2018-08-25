@@ -31,7 +31,7 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
 
 ## TODO
 
-- [ ] runtime speed with more advanced compiler settings
+- [x] runtime speed with more advanced compiler settings
 - [ ] reagent example
 - [ ] snapshot example
 - [ ] async example
