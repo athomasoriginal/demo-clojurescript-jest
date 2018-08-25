@@ -166,7 +166,6 @@ Before we can run jest against our tests, we have to compile our clojurescript. 
 
 [Node JS Modules From CLJS](https://anmonteiro.com/2017/03/requiring-node-js-modules-from-clojurescript-namespaces/)
 [Webpack Example Config](https://github.com/koba04/closure-webpack-example/blob/master/webpack.config.js)
-
-http://blog.codekills.net/2012/01/10/loading-google-closure-libraries-from-node.js/
-https://github.com/facebook/jest/issues/2417
-https://60devs.com/executing-js-code-with-nodes-vm-module.html - learning vms
+[Loading GCL from Node](http://blog.codekills.net/2012/01/10/loading-google-closure-libraries-from-node.js/)
+[Jest Github Issue](https://github.com/facebook/jest/issues/2417)
+[Learning VM's](https://60devs.com/executing-js-code-with-nodes-vm-module.html)
