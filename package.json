@@ -5,7 +5,7 @@
   "author": "tkjone",
   "license": "MIT",
   "scripts": {
-    "test": "jest --verbose target/public/cljs-out/test/demo/utils_test.js"
+    "test": "jest --verbose target/public/cljs-out/test/demo/*"
   },
   "devDependencies": {
     "google-closure-library": "^20180805.0.0",

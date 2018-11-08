@@ -8,6 +8,7 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
 - [Breakdown](#breakdown)
   - [Basic Jest Setup](#basic-jest-setup)
   - [Getting Started](#getting-started)
+  - [Multiple Tests](#multiple Tests)
 
 ## Quickstart
 
@@ -163,6 +164,14 @@ Before we can run jest against our tests, we have to compile our clojurescript. 
   ```bash
   yarn test
   ```
+
+### Multiple Tests
+
+In the getting started section we only had one file with tests. This means that our `yarn test` command was simple. We just told it to run the one file we had. However, as your project scales you are going to want to tell it how to run more than just one file. This section will explain how to scale to more than one file in the same dir. So lets update our `package.json` npm `test` script to look like this:
+
+```bash
+jest --verbose target/public/cljs-out/test/demo/*
+```
 
 ## When to use Jest
 
