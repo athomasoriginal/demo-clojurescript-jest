@@ -1,5 +1,5 @@
-(ns demo.core_test
-  (:require [demo.core :as component]))
+(ns demo.utils-test
+  (:require [demo.utils :as utils]))
 
 ;; Getting Started
 ;; -----------------------------------------------------------------------------
@@ -7,7 +7,7 @@
 
 (js/test
   "Adds 1 + 2 to equal 3"
-  #(.. (js/expect (component/sum 1 2)) (toBe 3)))
+  #(.. (js/expect (utils/sum 1 2)) (toBe 3)))
 
 
 ;; Using Matchers
@@ -75,3 +75,8 @@
                          "paper towels"
                          "beer"]]
       (.. (js/expect shopping-list) (toContain "beer")))))
+
+
+;; Async
+;; -----------------------------------------------------------------------------
+;; https://jestjs.io/docs/en/asynchronous

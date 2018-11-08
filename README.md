@@ -40,6 +40,8 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
 - [ ] running specific tests
 - [ ] when compiled can we run specific test files or files by name?
 - [ ] Clojure assertions
+- [ ] Structuring tests
+- [ ] Things that slow down test execution time
 
 ## Issues
 
@@ -105,7 +107,7 @@ The following are setup steps that I included in the event someone wants to see 
 
 If we start with the [getting started section](https://jestjs.io/docs/en/getting-started) of Jest start by converting the Jest test to CLJS:
 
-- demo.core
+- demo.utils
 
   ```clojure
   ;; js
@@ -118,7 +120,7 @@ If we start with the [getting started section](https://jestjs.io/docs/en/getting
     (+ a b))
   ```
 
-- demo.core_test
+- demo.utils_test
 
   ```clojure
   ;; js
@@ -129,7 +131,7 @@ If we start with the [getting started section](https://jestjs.io/docs/en/getting
   ;; cljs
   (js/test
     "Adds 1 + 2 to equal 3"
-    (.. (js/expect (component/sum 1 2)) (js/toBe 3)))
+    (.. (js/expect (utils/sum 1 2)) (js/toBe 3)))
   ```
 
   > Notice we are using the `js/` namespace, these are globals so it must be done
@@ -162,6 +164,13 @@ Before we can run jest against our tests, we have to compile our clojurescript. 
   yarn test
   ```
 
+## When to use Jest
+
+I would lean on Jest for front end specific testing
+
+- When we want to test our reagent components - do they render? does their behaviour work as expected?
+- When we want to test screen integration tests
+
 ## Resources
 
 - [Node JS Modules From CLJS](https://anmonteiro.com/2017/03/requiring-node-js-modules-from-clojurescript-namespaces/)
@@ -169,3 +178,5 @@ Before we can run jest against our tests, we have to compile our clojurescript. 
 - [Loading GCL from Node](http://blog.codekills.net/2012/01/10/loading-google-closure-libraries-from-node.js/)
 - [Jest Github Issue](https://github.com/facebook/jest/issues/2417)
 - [Learning VM's](https://60devs.com/executing-js-code-with-nodes-vm-module.html)
+- [EventBrite Testing Best Practices](https://github.com/eventbrite/javascript/blob/master/react/testing.md)
+- [React tests - structuring best practices](https://techblog.commercetools.com/testing-in-react-best-practices-tips-and-tricks-577bb98845cd)

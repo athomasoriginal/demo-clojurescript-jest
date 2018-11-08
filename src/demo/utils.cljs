@@ -1,4 +1,4 @@
-(ns demo.core)
+(ns demo.utils)
 
 ;; simple cljs test
 
