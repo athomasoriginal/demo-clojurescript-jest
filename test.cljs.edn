@@ -1,3 +1,14 @@
 ^{:open-url false}
 {:main          demo.utils_test
- :optimizations :none}
+ :optimizations :none
+ :npm-deps      false
+ :infer-externs true
+ :foreign-libs [{:file            "dist/index_test_bundle.js"
+                  :provides       ["react"
+                                   "react-dom"
+                                   "create-react-class"
+                                   "renderer"]
+                  :global-exports {react              React
+                                   react-dom          ReactDOM
+                                   create-react-class createReactClass
+                                   renderer           renderer}}]}

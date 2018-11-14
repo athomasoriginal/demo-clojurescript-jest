@@ -8,8 +8,11 @@
     "test": "jest --verbose target/public/cljs-out/test/demo/*"
   },
   "devDependencies": {
-    "google-closure-library": "^20180805.0.0",
+    "create-react-class": "^15.6.3",
     "jest": "^23.5.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.1",
+    "react-test-renderer": "^16.6.1",
     "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2"
   },

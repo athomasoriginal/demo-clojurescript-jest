@@ -3,6 +3,8 @@
 
 # javascript stuffs
 node_modules
+dist/*
+!dist/.gitkeep
 
 # clojure stuffs
 .cpcache

@@ -8,7 +8,12 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
 - [Breakdown](#breakdown)
   - [Basic Jest Setup](#basic-jest-setup)
   - [Getting Started](#getting-started)
-  - [Multiple Tests](#multiple Tests)
+  - [Multiple Tests](#multiple-tests)
+  - [Snapshot Testing](#snapshot-testing)
+    - [Step 1 Install Test Dependencies](#step-1-install-test-dependencies)
+    - [Step 2 Setup webpack externs bundle](#step-2-setup-webpack-externs-bundle)
+    - [Step 3 Write your react component test](#step-3-write-your-react-component-test)
+    - [Gotchas](#gotchas)
 
 ## Quickstart
 
@@ -17,6 +22,14 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
   ```bash
   yarn
   ```
+
+- Build Dependencies
+
+  ```bash
+  yarn webpack
+  ```
+
+  > will create a `./dist/index_test_bundle.js` file in your root directory
 
 - Compile tests
 
@@ -33,16 +46,24 @@ Jest and CLJS. I always wondered why I never saw anyone using Jest with CLJS. As
 ## TODO
 
 - [x] runtime speed with more advanced compiler settings
-- [ ] reagent example
-- [ ] snapshot example
+- [x] snapshot example
+- [x] execute multiple test files in same dir
+- [ ] medium complexity reagent example
 - [ ] async example
 - [ ] run tests as extra mains (watch) - [figwheel.main](https://figwheel.org/docs/extra_mains.html)
-- [ ] running through multiple tests
-- [ ] running specific tests
-- [ ] when compiled can we run specific test files or files by name?
-- [ ] Clojure assertions
+  - [ ] chain yarn tests to figwheel compilation
+- [ ] execute all tests in the test dir
+- [ ] example of running specific tests by file or name
 - [ ] Structuring tests
-- [ ] Things that slow down test execution time
+- [ ] Clojure assertions
+- [ ] test performance
+- [ ] compilation errors
+  - [ ] figwheel does not always return informative messages: incorrectly import something
+- [x] Make react included the developer version
+- [ ] Improve naming conventions for webpack and where the folders/files are located
+- [ ] Troubleshooting externs
+  - [ ] ability to add externs without losing reagent losing its internal react reference
+- [ ] move snapshot tests outside of target directory (Jest 24)
 
 ## Issues
 
@@ -172,6 +193,170 @@ In the getting started section we only had one file with tests. This means that 
 ```bash
 jest --verbose target/public/cljs-out/test/demo/*
 ```
+
+### Snapshot Testing
+
+In order to reproduce the minimal react snapshot test as outlined in the [Jest documentation](https://jestjs.io/docs/en/snapshot-testing) you need to perform the following setup:
+
+1.  Install test dependencies
+2.  Setup webpack externs bundle
+
+#### Step 1 Install Test Dependencies
+
+- Install dependencies
+
+  ```bash
+  yarn add -D react react-dom create-react-class react-test-renderer
+  ```
+
+#### Step 2 Setup webpack externs bundle
+
+- Install webpack
+
+  ```bash
+  yarn webpack
+  ```
+
+- Configure test.cljs.edn
+
+  ```clojure
+  :npm-deps      false
+  :infer-externs true
+  :foreign-libs [{:file            "dist/index_test_bundle.js"
+                   :provides       ["react"
+                                    "react-dom"
+                                    "create-react-class"
+                                    "renderer"]
+                   :global-exports {react              React
+                                    react-dom          ReactDOM
+                                    create-react-class createReactClass
+                                    renderer           renderer}}]}
+  ```
+
+- Create your externs bundle
+
+  ```javascript
+  import React from "react";
+  import ReactDom from "react-dom";
+  import createReactClass from "create-react-class";
+  import renderer from "react-test-renderer";
+
+  window.React = React;
+  window.ReactDOM = ReactDom;
+  window.createReactClass = createReactClass;
+  window.renderer = renderer;
+  ```
+
+- Compile your webpack externs bundle
+
+  ```bash
+  yarn webpack
+  ```
+
+#### Step 3 Write your react component test
+
+The javascript version of Jest's example snapshot test looks like this:
+
+```javascript
+import React from "react";
+import Link from "../Link.react";
+import renderer from "react-test-renderer";
+
+it("renders correctly", () => {
+  const tree = renderer
+    .create(<Link page="http://www.facebook.com">Facebook</Link>)
+    .toJSON();
+  expect(tree).toMatchSnapshot();
+});
+```
+
+Convert the above into ClojureScript:
+
+```clojure
+(ns demo.component-test
+  (:require [demo.component :as component]
+            [reagent.core :as r]
+            [renderer]))
+
+(js/it
+  "Render correctly"
+  (fn []
+    (let [button [component/button
+                  {:class "test-class"
+                   :type  "button"}]
+            tree   (.. renderer (create (r/as-element button)) (toJSON))]
+        (.. (js/expect tree) (toMatchSnapshot)))))
+```
+
+And now we can run our tests
+
+```bash
+yarn test
+```
+
+#### Gotchas
+
+This section is going to review a bunch of the problems I faced when working through the above:
+
+- which version of React?
+
+  When you use the webpack externs bundle in tests Reagent will also be using the same version as in your externs bundle. The reason to mention this is because if you happen to be writing your main application without an externs bundle you may be on a different version then the one you are testing with in Jest. So how does this work?
+
+  Webpack externs will create a global instance of `React`. This version is going to be picked up by Reagent. So how can you verify this? One way:
+
+  ```javascript
+  (js/console.log "After checks")
+  (js/console.log (.. js/React -version))
+
+  (js/console.log "Before test checks")
+  (js/console.log (.. js/reagent -impl -template -global$module$react))
+  ```
+
+  All I am saying is be careful to take note of what you are using because if you are using an older version of Reagent then you are testing you can and will get some weird inconsistencies.
+
+- Why do I need to install `react` and friends?
+
+  `react-test-renderer` references a global `React` namespace (along with the other 3 libraries we installed in step 1). If you do not include these, `react-test-renderer` will not work. Is this a problem? Generally, no. Unless of course the question above is an issue then this could be a problem.
+
+- Do I have to manually build my externs in `test.cljs.edn`?
+
+  No. Figwheel can dynamically generate this for you if you add the following to the meta information section of your `test.cljs.edn` file
+
+  ```clojure
+  :npm      {:bundles {"dist/index_test_bundle.js" "src/js/index.js"}}}
+  ```
+
+  For more information see the official [figwheel npm setup guide](https://figwheel.org/config-options#npm)
+
+* I am seeing weird errors about call of undefined?
+
+  Assuming you got Jest working on its own, these are likely `Reagent` or `react-test-renderer` not being back to find their dependencies. To resolve see step 1 and 2 and carefully read the messages.
+
+- Stale tests failing?
+
+  sometimes when you change a files name, stale tests can be left behind and jest will try to test them anyways. In this case, just clear the `target` directory and trying compiling from scratch. The important takeaway is that this is not Jest failing. This is an issue with compilation.
+
+* Capitalization / spelling of externs
+
+  Don't capitalize React. It will not be found. This is another reason for defining your own externs in `test.cljs.edn`. You want to control the names used.
+
+* [Not a valid react component](https://reactjs.org/docs/error-decoder.html/?invariant=31&args%5B%5D=object%20with%20keys%20%7Bkey%2C%20val%2C%20__hash%2C%20cljs%24lang%24protocol_mask%24partition0%24%2C%20cljs%24lang%24protocol_mask%24partition1%24%7D&args%5B%5D=)
+
+  The following message happens in jest when you trying rendering a reagent component incorrectly.
+
+  But there is more wrong with this. we don't see the react message inline. Lets make this a developer version of react.
+
+  reason for this is when you pass reagent component -> react component
+
+- snapshots will be stored beside the tests
+
+  the issue that that target dir is getting rewritten all the time so syou get a message like:
+
+  ```clojure
+  1 snapshot obsolete.
+  ```
+
+  The good news is that this should be resolved in [jest 24](https://github.com/facebook/jest/pull/6143)
 
 ## When to use Jest
 
